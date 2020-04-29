@@ -12,7 +12,8 @@ const browsers = ci
     ? undefined
     : watch
       ? ['Chrome']
-      : ['Chrome', 'Firefox'];
+      // : ['Chrome', 'Firefox'];
+      : ['Chrome'];
 
 module.exports = function (config) {
   config.set({
@@ -20,12 +21,12 @@ module.exports = function (config) {
     frameworks: ['mocha'],
     // list of files / patterns to load in the browser
     files: [
-      { pattern: 'test/**/*.js' },
-      { pattern: 'es/test/**/*.js' }
+      { pattern: process.env.FILES_PATTERN },
     ],
     plugins: [
       'karma-mocha',
       require('karma-mocha-reporter'),
+      require('./karma-benchmark-reporter'),
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-browserstack-launcher',
@@ -50,7 +51,7 @@ module.exports = function (config) {
     },
     browserNoActivityTimeout: 1000000,
     customLaunchers: browserstack,
-    reporters: ['mocha', 'BrowserStack'],
+    reporters: ['mocha', 'benchmark', 'BrowserStack'],
     mochaReporter: {
       showDiff: true
     },
@@ -59,6 +60,6 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: browsers,
     singleRun: !watch && !live,
-    concurrency: ci ? 1 : Infinity,
+    concurrency: 1,
   });
 };
